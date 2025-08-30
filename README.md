@@ -174,3 +174,290 @@ Why this approach?
 - Unlike the CNN dataset (cropped 49×49 patches), YOLO requires full images with bounding boxes, enabling it to learn both localisation and classification in one pass.
 - Using sub-tiles ensured that ships remained visible without overwhelming GPU memory.
 - A single-class setup simplified the pipeline while directly aligning with the research goal: detecting ships in Sentinel-2 imagery.
+
+
+🧠 CNN-Based Methodology
+
+
+The CNN approach was designed to detect ships in Sentinel-2 imagery using transfer learning from state-of-the-art (SOTA) convolutional architectures. The workflow can be summarised as follows:
+
+🔹 Models Used
+Eight CNN models were evaluated:
+- VGG-16 – baseline, simple 3×3 conv filters, frozen feature extractor + new classifier.
+- ResNet-50 – residual connections, added dropout, tuned dense layers.
+- Inception-V3 – parallel filters, batch norm, increased training epochs.
+- NASNetMobile – neural architecture search (lightweight, efficient).
+- EfficientNetB0 – compound scaling for balanced efficiency.
+- DenseNet-121 – dense connectivity for gradient flow.
+- MobileNet-V2 – lightweight, designed for real-time/mobile use.
+- SimpleNet2021 – custom-built CNN trained from scratch as a baseline.
+
+
+🔹 Experimental Setup
+- Environment: Python + TensorFlow 2 on GPU (NVIDIA GTX 1660 Ti).
+- Dataset: 1,385 labelled images (5 classes: Ship, Cloud, Land, Sea, Coast).
+  - Train/test split = 1067 / 318 images.
+
+- Preprocessing:
+  - Pixel values normalised (0–1).
+  - Labels one-hot encoded.
+  - Resized to match input requirements (e.g., 224×224 for transfer learning).
+
+
+🔹 Training & Compilation
+- Transfer Learning: Pre-trained ImageNet weights with frozen base layers; new classifier layers added.
+- Loss Function: Categorical Cross-Entropy.
+- Optimiser: Adam / SGD with tuned learning rates.
+- Evaluation Metrics: Precision, Recall, F1-score, Accuracy, Confusion Matrix, Classification Report.
+
+
+🔹 Detection on Large Images
+- Used sliding window (49×49 crops) to scan 2000×2000 scene images.
+- Predictions combined into detection maps.
+- Applied Non-Maximum Suppression (NMS) to remove duplicate bounding boxes.
+
+
+🔹 Hyperparameter Optimisation (HPO)
+- Random Search used instead of grid search (less computationally heavy).
+- Adjustments included neuron counts, dropout rates, and epochs per model.
+
+
+🔹 Data Augmentation
+- Initially tested (rotation, flipping, scaling), but degraded model performance.
+- Omitted from final methodology to keep data realistic.
+
+
+🚀 YOLOv11-Based Methodology
+
+To overcome the limitations of CNNs (sliding windows, slow inference, limited localisation), a YOLOv11 Nano model was implemented for real-time ship detection in Sentinel-2 imagery. Unlike CNN pipelines, YOLO directly predicts bounding boxes and class labels in a single forward pass, making it efficient for maritime surveillance tasks.
+
+
+🔹 Why YOLOv11?
+- Handles small objects like ships effectively using spatial pyramid pooling and attention mechanisms.
+- Lightweight and deployable on resource-constrained devices (e.g., drones, CubeSats).
+- Supports real-time detection with high accuracy.
+
+
+🔹 Experimental Setup
+- Framework: Ultralytics YOLOv11, built on PyTorch.
+- Dataset: Custom Sentinel-2 dataset (156 annotated images, 504 ship instances).
+- Input Size: 640×640 pixels (balanced resolution vs. memory).
+- Annotation Format: YOLO text files → <class> <x_center> <y_center> <width> <height> (normalised).
+- Hardware: Trained on Google Colab (Tesla T4 GPU) for speed and scalability.
+
+
+🔹 Training Configuration
+- Epochs: 55 (avoided under/overfitting).
+- Batch Size: 16.
+- Optimiser: AdamW (auto-configured by Ultralytics).
+- Learning Rate: 0.002 with momentum 0.9.
+-  Data Augmentation: Mosaic, flips, rotations, scaling applied to improve generalisation.
+
+
+🔹 Key Loss Functions Monitored
+- Box Loss → error in bounding box localisation.
+- Cls Loss → classification accuracy for “ship”.
+- Dfl Loss → confidence/stability in box predictions.
+
+
+🔹 Evaluation Metrics
+- Precision, Recall, F1-Score → classification quality.
+- IoU & mIoU → bounding box overlap accuracy.
+- AP & mAP50 / mAP[50–95] → average precision at multiple thresholds.
+- ROC & Precision-Recall curves → assessed class imbalance and trade-offs.
+
+
+🔹 Challenges & Fine-Tuning
+- No True Negatives: Initially, test data only had ships. TN images were later added to allow full confusion matrix evaluation.
+- Missed Detections: Model sometimes failed on small/occluded ships → mitigated with augmentation & IoU threshold tuning.
+- Hyperparameter Adjustments: Tweaked learning rate, batch size, weight decay for better convergence.
+- Early Stopping: Stopped training if validation performance plateaued.
+
+
+🔹 Outcome
+YOLOv11 successfully demonstrated fast and accurate ship detection with potential for real-time maritime monitoring. Despite dataset limitations, the model outperformed CNN approaches in efficiency and scalability, marking it as a practical framework for Maritime Domain Awareness (MDA) applications.
+
+
+📊 Results & Discussion – CNN-Based Approach
+
+
+🔹 Model Performance
+Eight CNN architectures were tested on the custom Sentinel-2 dataset (5 classes: Ship, Cloud, Sea, Land, Coast).
+
+
+- Top Performers:
+  - ResNet-50 → Highest validation accuracy (97.8%) but signs of overfitting.
+  - VGG-16 & Inception-V3 → Strong validation accuracy (95.6%) with more stable convergence.
+  - EfficientNetB0 → Balanced accuracy (97.1%) and efficiency.
+  - MobileNet-V2 → Competitive (93.1%) with excellent computational efficiency.
+
+
+- Weaker Models:
+  - DenseNet-121 → Oscillations, less stable.
+  - NASNetMobile → Poor generalisation (82.1% validation accuracy).
+  - SimpleNet2021 → Lightweight but limited performance (<80% accuracy).
+
+
+🔹 Confusion Matrix Insights
+- ResNet-50 → Strongest overall, high true positives (TP) and true negatives (TN).
+- VGG-16 → Best at detecting ships (only 4 false predictions in Ship class).
+- Common Misclassifications:
+  - Cloud vs. Sea – frequent confusion due to spectral similarity.
+  - Land vs. Coast – overlaps caused misclassifications.
+- SimpleNet2021 → Failed to detect ships reliably, mostly misclassifying clouds/land.
+
+
+🔹 Large Scene Evaluation (2000×2000 px images)
+- MobileNet-V2 → Best generalisation, correctly detected most ships with minimal false positives, though it missed near-shore vessels.
+- NASNetMobile & EfficientNetB0 → Detected many ships but high false positives.
+- ResNet-50, VGG-16, Inception-V3 → Despite strong accuracy metrics, showed poor scene-level performance with excessive false positives.
+- Key Takeaway: Accuracy on small crops ≠ robust detection on full-scene satellite images.
+
+<img width="534" height="777" alt="image" src="https://github.com/user-attachments/assets/2ad5423a-278e-4bb6-8e47-bb756477aa57" />
+
+
+🔹 Optimisation (HPO + NMS)
+- Hyperparameter Optimisation (HPO): Improved convergence but varied by model.
+- Non-Maximum Suppression (NMS): Reduced redundant bounding boxes and false positives.
+- Best F1-Scores after optimisation:
+  - Inception-V3 → 61.5%
+  - ResNet-50 → 58.3%
+  - EfficientNetB0 → 61.1%
+- Trade-offs: Higher accuracy models required long training/inference times (e.g., ResNet-50 took ~4.5h for one scene image).
+
+<img width="565" height="804" alt="image" src="https://github.com/user-attachments/assets/e51dff63-1c94-4e99-91f9-fb94204e5565" />
+
+<img width="674" height="302" alt="image" src="https://github.com/user-attachments/assets/5618f391-22b3-43c7-9074-7511e275974a" />
+
+
+🔹 Testing with MASATI-V2 Dataset
+- On MASATI-V2 (larger dataset) → All models improved, with ResNet-50 achieving perfect scores.
+- Cross-dataset testing (trained on custom dataset, tested on MASATI-V2) → Performance dropped significantly, showing that dataset size and diversity are critical.
+- Ship Class Focus → High precision across most models, confirming robustness for detecting ships even with dataset constraints.
+  
+
+✅ Overall Takeaway:
+- CNNs can achieve high classification accuracy on small cropped patches, but generalisation to full-scene images remains challenging.
+- MobileNet-V2 was the most practical candidate for deployment due to its balance of accuracy, efficiency, and generalisation.
+- Larger, more diverse datasets (like MASATI-V2) significantly improve CNN performance, underscoring the importance of dataset quality over model complexity.
+
+
+📊 Results & Discussion – YOLOv11-Based Approach
+
+
+🔹 Overall Performance
+YOLOv11 was evaluated for ship detection in Sentinel-2 imagery, focusing on precision, recall, F1-score, and mean Average Precision (mAP). Both a default YOLOv11 model and a fine-tuned version were tested.
+- Default YOLOv11: Achieved respectable results with mAP = 78.05%, but struggled with precise localisation at higher IoU thresholds.
+- Fine-Tuned YOLOv11: Outperformed the default, reaching mAP = 85.51%, showing better adaptability and generalisation.
+
+
+🔹 Training Insights
+- Loss curves (Box, Class, DFL) showed consistent decreases, indicating stable learning.
+- mAP50 improved steadily to ~98% during training, while mAP50–95 peaked at ~23%, reflecting challenges in very strict localisation.
+- Precision rose rapidly after epoch 6, peaking around 76%, while recall improved more gradually to ~64%. Fine-tuning helped balance both metrics.
+
+
+🔹 Test Results
+- Best operating threshold: IoU = 0.5, confidence > 0.3.
+- Confusion Matrix (Fine-Tuned model):
+  - True Positives (TP): 53
+  - False Positives (FP): 10
+  - False Negatives (FN): 6
+  - True Negatives (TN): 1
+- Achieved high recall (88.1%), critical for maritime surveillance where missing ships is more costly than over-detecting.
+
+<img width="529" height="760" alt="image" src="https://github.com/user-attachments/assets/d4dfe33d-ff39-4ef1-b516-81c0229e550e" />
+
+<img width="515" height="351" alt="image" src="https://github.com/user-attachments/assets/0d3e046a-27a8-4699-9aa2-4caca8e9da1e" />
+
+<img width="510" height="694" alt="image" src="https://github.com/user-attachments/assets/31d36f11-a774-4733-b5c3-ccd7cf3943b2" />
+
+<img width="635" height="624" alt="image" src="https://github.com/user-attachments/assets/c25b7da8-80e1-44ec-9cbc-051f084860c7" />
+
+
+🔹 Strengths
+- Robust against false detections over land, coasts, reefs, and in cloudy/foggy conditions.
+- Correctly detected small ships with visible wakes and partial ships cut by image boundaries.
+- Demonstrated practical real-time detection potential for maritime domain awareness.
+
+
+🔹 Limitations
+- Missed small ships unless visually distinct (e.g., red vessels).
+- Struggled with closely spaced ships and harbour/shoreline clutter.
+- Occasionally misclassified cloud patterns as ships.
+- Multiple bounding boxes sometimes drawn around the same ship (NMS inefficiencies).
+- Challenges due to dataset constraints: limited size, low resolution, and lack of true negatives in early experiments.
+
+
+🔹 Key Takeaways
+- YOLOv11 generalised better than CNNs for full-scene images, offering strong recall and adaptability.
+- Fine-tuning significantly improved performance across IoU thresholds, stabilising precision and recall.
+- Despite limitations with small objects and dataset size, YOLOv11 showed clear promise as a practical, real-time framework for ship detection in satellite imagery.
+
+
+✅ Summary: Fine-Tuned YOLOv11 achieved 85.5% mAP, strong recall, and robustness in complex maritime scenes, outperforming traditional CNNs in both efficiency and adaptability.
+
+
+⚖️ Comparative Analysis – CNN vs YOLOv11
+🔹 Architectural Differences
+- CNN Approach:
+  - Worked on 49×49 image chips, classifying them into Ship, Sea, Land, Coast, or Cloud.
+  - Required multiple steps → classification → merging → bounding box placement.
+  - Accurate on small chips, but weak when generalising to large full-scene images.
+
+
+- YOLOv11 Approach:
+  - Processes entire images in one pass, predicting both class and bounding box simultaneously.
+  - Optimised for real-time detection with fewer preprocessing steps.
+  - More effective in cluttered maritime environments (clouds, reefs, coasts).
+
+
+🔹 Dataset Requirements
+- CNN: Needed thousands of small, manually cropped patches, with multiple classes.
+- YOLOv11: Used 2000×2000 sub-tiles annotated with bounding boxes.
+- Result: YOLO dataset was more scalable and context-rich.
+
+
+🔹 Quantitative Performance (Scene-Level)
+<img width="833" height="218" alt="image" src="https://github.com/user-attachments/assets/bb33454c-8bac-4393-847c-695950dccbca" />
+
+
+🔹 Qualitative Observations
+- CNN Limitations:
+  - Overfitting (ResNet-50).
+  - Frequent false positives in scene images.
+  - Missed near-shore and harbour ships due to background clutter.
+  - Confusion between Cloud vs Sea, Land vs Coast.
+
+- YOLOv11 Strengths:
+  - Fewer false detections in land/coastal/cloudy regions.
+  - Better detection of small ships and partially visible ships.
+  - More robust in cluttered, real-world maritime scenes.
+  - Still struggled with:
+    - Misclassifying certain cloud patterns as ships.
+    - Detecting closely spaced vessels.
+    - Occasional duplicate bounding boxes.
+
+
+🔹 Efficiency & Scalability
+- CNN: Heavy preprocessing (tiling), slow inference, higher memory needs.
+- YOLOv11: Entire image processed at once, faster inference and fewer epochs to converge.
+
+
+🔹 Application Suitability
+- CNN: Useful in controlled environments with well-defined classes (e.g., forensic analysis, classification tasks).
+- YOLOv11: Better suited for real-world maritime surveillance and real-time applications (live monitoring, drones, CubeSats).
+  
+
+✅ Summary:
+CNNs achieved high accuracy on small patches but struggled in full-scene detection. YOLOv11 outperformed CNNs across accuracy, recall, and inference speed, making it the more practical and scalable solution for ship detection in Sentinel-2 imagery.
+
+| Feature                 | CNN Approach                               | YOLOv11 Approach                                   |
+| ----------------------- | ------------------------------------------ | -------------------------------------------------- |
+| **Input Format**        | 49×49 patches, multi-class labels          | 2000×2000 images with bounding boxes               |
+| **Architecture**        | Classification → localisation (multi-step) | End-to-end detection (single forward pass)         |
+| **Performance (Scene)** | Accuracy 17–30%, Recall ≤ 44%              | Accuracy 77%, Recall 84%                           |
+| **Strengths**           | Good at fine-grained classification        | Robust in clutter, real-time detection             |
+| **Weaknesses**          | Overfitting, many false positives, slow    | Missed small/closely spaced ships, cloud confusion |
+| **Inference Speed**     | 10–16s per chip                            | 0.03s per full image                               |
+| **Best Use Case**       | Controlled classification tasks            | Maritime surveillance, real-time monitoring        |
