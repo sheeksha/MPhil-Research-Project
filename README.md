@@ -36,6 +36,13 @@ To summarise, this research demonstrates that CNNs and YOLO offer significant po
 
 
 
+Available overview of optical satellite datasets utilised for ship detection tasks.
+
+This collection highlights the diversity of datasets used in maritime object detection, ranging from high-resolution commercial data to publicly available data with varying revisit times and resolutions. 
+
+<img width="545" height="720" alt="image" src="https://github.com/user-attachments/assets/2868b308-bcf1-46f2-a05f-824ea73b8bbc" />
+
+
 🛰️ Background
 
 
