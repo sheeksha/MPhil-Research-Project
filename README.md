@@ -461,3 +461,42 @@ CNNs achieved high accuracy on small patches but struggled in full-scene detecti
 | **Weaknesses**          | Overfitting, many false positives, slow    | Missed small/closely spaced ships, cloud confusion |
 | **Inference Speed**     | 10–16s per chip                            | 0.03s per full image                               |
 | **Best Use Case**       | Controlled classification tasks            | Maritime surveillance, real-time monitoring        |
+
+
+
+🏁 Conclusion & Future Work
+🔹 Summary of Findings
+
+This research investigated ship detection in Sentinel-2 imagery over the Mauritian EEZ using two approaches:
+1. CNN-based classification (chip-level, multi-class).
+2. YOLOv11-based detection (end-to-end, real-time).
+
+
+Key findings:
+- CNNs (ResNet-50, EfficientNetB0) achieved high validation accuracy on small patches, but struggled to generalise to full-scene images, with frequent misclassifications (e.g., Cloud vs Sea, Land vs Coast) and long inference times.
+- YOLOv11 (fine-tuned) consistently outperformed CNNs, delivering higher accuracy, precision, recall, and F1-scores while avoiding false detections over land, reefs, and cloudy regions. It also detected small ships and partially cut-off vessels, making it the more practical solution for real-world maritime surveillance.
+- Trade-offs remained: CNNs excelled in controlled classification tasks, while YOLOv11 showed stronger generalisation and scalability but missed some very small or closely spaced ships.
+
+
+
+🔹 Contributions
+- Built two custom Sentinel-2 datasets tailored for CNN and YOLO.
+- Delivered a comparative study highlighting model strengths/limitations.
+- Produced a fine-tuned YOLOv11 model adapted for Sentinel-2 imagery.
+
+
+🔹 Recommendations for Future Work
+- Expand Datasets: Larger, more diverse Sentinel-2 collections, crowdsourced or collaborative annotation, and use of newer imagery (post-2021).
+- Optimise Inputs: Use smaller, higher-resolution tiles (e.g., 640×640) to preserve ship detail for YOLO.
+- Address Class Imbalance: Apply resampling methods like SMOTE.
+- Enhance Data Augmentation: Employ advanced techniques (CutMix, MixUp, GAN-based, multi-modal with SAR).
+- Hybrid Detection: Use YOLO for coarse detection + CNNs for refined classification.
+- Temporal Tracking: Integrate sequential imagery to track ship movement and direction (e.g., YOLOv11-OBB with oriented bounding boxes).
+- Improve Interpretability: Develop user-friendly outputs (natural language alerts, interactive maps, confidence-based warnings).
+- Integrate Other Sensors: Combine Sentinel-2 with Sentinel-1 SAR for all-weather, day/night monitoring.
+- Tackle Limitations: Custom loss functions, attention/transformer mechanisms, adaptive thresholds for small ships and cluttered harbours.
+- Foundation Models: Explore DETR, SAM, and DINO for zero/few-shot detection and domain adaptation to maritime surveillance.
+  
+
+✅ Conclusion:
+YOLOv11 emerged as the most practical and scalable solution for Sentinel-2 ship detection, offering real-time potential for Maritime Domain Awareness (MDA). However, future research must expand datasets, enhance interpretability, and integrate multi-sensor approaches to build robust, deployable surveillance systems for small island states like Mauritius.
