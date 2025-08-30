@@ -43,9 +43,134 @@ This collection highlights the diversity of datasets used in maritime object det
 <img width="545" height="720" alt="image" src="https://github.com/user-attachments/assets/2868b308-bcf1-46f2-a05f-824ea73b8bbc" />
 
 
-🛰️ Background
+
+🛰️ Sentinel-2 Satellite
 
 
-- Monitoring maritime activity in EEZs is essential for safety, security, and resource management.
-- Traditional surveillance (patrol vessels, radars) is expensive and limited in coverage.
-- Satellite imagery + AI offers scalable and cost-effective monitoring.
+The Sentinel-2 mission, operated by the European Space Agency (ESA), is a medium- to high-resolution Earth observation program designed for environmental monitoring, land use analysis, and maritime surveillance. It consists of twin satellites in the same orbit, phased 180° apart, ensuring a revisit time of five days at the Equator. Each satellite is equipped with the Multi-Spectral Instrument (MSI), capturing data in 13 spectral bands: four at 10 m, six at 20 m, and three at 60 m resolution, across a swath width of 290 km.
+
+
+Sentinel-2 data are freely available and provide a cost-effective alternative to commercial imagery, which can be prohibitively expensive for small island states. For this research, Sentinel-2 was chosen as the optimal balance of spatial resolution, temporal frequency, and accessibility, making it well suited for monitoring large maritime areas such as Mauritius’ Exclusive Economic Zone (EEZ).
+
+
+The satellites collect data over land, coastal regions, and islands worldwide, including inland water bodies and closed seas. Data are provided in two main product levels:
+- Level-1C: Top-Of-Atmosphere (TOA) reflectance, orthorectified for geometric accuracy. (~600 MB per 100×100 km² tile)
+- Level-2A: Bottom-Of-Atmosphere (BOA) reflectance, atmospherically corrected for surface-level analysis. (~800 MB per tile)
+
+
+Both products are distributed as standardised 100×100 km² ortho-image tiles in the Universal Transverse Mercator (UTM/WGS84) projection, ensuring spatial consistency and seamless integration with other geospatial datasets.
+
+
+The UTM projection is critical for precise vessel detection, as it allows Sentinel-2 imagery to align with maritime boundaries, AIS vessel data, and port infrastructure. For Mauritius, whose vast EEZ spans multiple UTM zones, this ensures reliable monitoring of shipping lanes, vessel movements, and potential threats.
+
+
+<img width="728" height="386" alt="image" src="https://github.com/user-attachments/assets/2bf1711b-a57b-497d-a917-cba24b96f325" />
+
+
+📚 Literature Review: Advances in Ship Detection
+
+
+Ship detection in satellite imagery has evolved from traditional image processing methods with handcrafted features (HOG, SIFT) to deep learning-based approaches that learn robust patterns directly from data.
+
+
+🔹 Convolutional Neural Networks (CNNs)
+- CNNs introduced automated feature extraction, making them far more effective than traditional methods in noisy maritime environments.
+- Two-stage CNN frameworks (e.g., R-CNN family) achieve high precision but are computationally expensive.
+- Single-stage CNN frameworks (e.g., SSD, MobileNet variants) are more efficient, enabling near real-time applications.
+- Specialised innovations such as multi-scale feature fusion and attention mechanisms improved detection across diverse ship sizes and complex backgrounds.
+
+
+🔹 YOLO (You Only Look Once)
+- YOLO revolutionised real-time detection by combining classification and localisation in a single forward pass.
+- Recent versions (YOLOv5–YOLOv11) integrate transformer modules, spatial attention, and multi-scale detection, making them highly effective in maritime contexts.
+- Studies applying YOLO to Sentinel-2 imagery have achieved strong precision/recall trade-offs, making it suitable for operational monitoring.
+
+
+🔹 Foundation Models & Emerging Trends
+- Foundation models (DETR, DINO, Florence-2) leverage large-scale pretraining to generalise across tasks with minimal labelled data.
+- They capture global context, making them robust in noisy environments with clouds, waves, and occlusions.
+- Limitations include high computational costs, domain adaptation challenges, and interpretability issues.
+
+
+🔹 Key Insights
+- CNNs excel in accuracy but are resource-heavy.
+- YOLO balances speed and accuracy, ideal for real-time ship monitoring.
+- Foundation models offer scalability and few-shot learning but require heavy compute.
+- Research highlights a trade-off between precision and efficiency, shaping how models are chosen for maritime surveillance.
+
+
+📂 Dataset Creation for CNN
+
+
+Since no ready-to-use Sentinel-2 ship detection dataset was available, a custom dataset was built from scratch using Sentinel-2 optical imagery collected between March 2016 and March 2021.
+
+
+<img width="700" height="479" alt="image" src="https://github.com/user-attachments/assets/81b797dd-6867-4580-939b-7d6daf57ef3c" />
+
+
+Steps Taken
+- Image Collection:
+  - Downloaded 98 Sentinel-2 images in .SAFE format.
+  - Each contained 13 bands; RGB images were generated manually by stacking B02 (Blue), B03 (Green), and B04 (Red) bands instead of using the prebuilt TCI, to ensure consistency.
+
+
+- Ship Extraction:
+  - Images were analysed in QGIS 3.10.
+  - 522 ship instances were manually identified and cropped.
+
+
+- Image Preprocessing:
+  - Crops were resized to 49×49 pixels, chosen to capture the largest visible ships in Sentinel-2 data.
+  - To improve classification accuracy, the dataset was expanded to five classes:
+    - Ship (522)
+    - Cloud (521)
+    - Sea (123)
+    - Land (159)
+    - Coast (60)
+  - Total: 1385 labelled instances.
+
+
+<img width="758" height="608" alt="image" src="https://github.com/user-attachments/assets/169844a3-2bd7-4a0e-a38b-85676b01712f" />
+
+
+- Annotation Challenges:
+  -  Many annotation tools didn’t support large JPEG2000 files or raw band stacking.
+  -  QGIS was chosen as the annotation tool since it could process the raw bands directly and generate raster layers without quality loss.
+
+Why this approach?
+- Unlike large public datasets (e.g., xView, DIOR), this dataset was tailored specifically to Sentinel-2 imagery and the Mauritian EEZ context.
+- Instead of fine-grained ship classification (e.g., tankers, fishing vessels), the focus was on distinguishing ships from common maritime backgrounds like sea, land, clouds, and coastlines.
+
+
+📂 Dataset Creation for YOLO
+
+
+For the YOLO-based approach, a custom dataset was created from Sentinel-2 imagery (March 2019 – March 2021) to enable real-time ship detection.
+
+Steps Taken
+- Image Collection & Preprocessing:
+  - Used 98 Sentinel-2 raw tiles, each 10,000 × 10,000 pixels.
+  - Split them into smaller 2,000 × 2,000 sub-tiles to maintain ship visibility while making images manageable for YOLO.
+  - From 1,501 sub-tiles generated, 156 relevant sub-tiles were selected for annotation.
+
+- Annotation:
+  - Ships were annotated with bounding boxes using LabelImg.
+  - Annotations followed YOLO’s required format:
+      class center_x center_y width height (all coordinates normalised by image dimensions).
+
+  - A single class (“Ship”) was used to avoid class imbalance and focus the model on vessel detection.
+
+- Dataset Composition:
+  - 504 total ship instances across 156 annotated images.
+  - Train/validation/test split: 70% / 15% / 15%.
+    - Training: 109 images (349 ships)
+    - Validation: 24 images (73 ships)
+    - Test: 23 images (82 ships)
+
+
+Why this approach?
+
+
+- Unlike the CNN dataset (cropped 49×49 patches), YOLO requires full images with bounding boxes, enabling it to learn both localisation and classification in one pass.
+- Using sub-tiles ensured that ships remained visible without overwhelming GPU memory.
+- A single-class setup simplified the pipeline while directly aligning with the research goal: detecting ships in Sentinel-2 imagery.
