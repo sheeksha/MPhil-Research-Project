@@ -1,5 +1,6 @@
 # MPhil-Research-Project
 **My research project for the Master in Philosophy (MPhil) degree in Remote Sensing with Artificial Intelligence.**
+
 🚢 Ship Detection in the Exclusive Economic Zone of Mauritius in Sentinel-2 Imagery using CNNs & Yolov11
 
 ## 🙏 Acknowledgements
