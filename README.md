@@ -534,7 +534,7 @@ YOLOv11 emerged as the most practical and scalable solution for Sentinel-2 ship 
 ## 📄 Full Thesis Document
 You can access the complete MPhil thesis here:
 
-[**➡️ Download / View Thesis (PDF)**](Thesis.pdf)
+[**➡️ View Thesis (PDF)**](https://drive.google.com/file/d/18t70Z0JpDOBfPRq6N9iYhKBNFPzB_d8H/view?usp=sharing)
 
 ---
 
