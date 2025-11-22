@@ -108,10 +108,10 @@ The distance \( d \) between two geographic points is calculated using the Haver
 </p>
 
 where:
- 𝑑 is the distance between the two points.
- 𝑟 is the radius of the Earth (usually taken as 6371 km).
- 𝜑1 and 𝜑2 are the latitudes of the two points in radians.
- 𝜆1 and 𝜆2 are the longitudes of the two points in radians.
+- 𝑑 is the distance between the two points.
+- 𝑟 is the radius of the Earth (usually taken as 6371 km).
+- 𝜑1 and 𝜑2 are the latitudes of the two points in radians.
+- 𝜆1 and 𝜆2 are the longitudes of the two points in radians.
 
 This reinforces the use of satellite imagery with a 6-day revisit frequency for effective ship monitoring, ensuring multiple detections along the route and improving surveillance reliability.
 
