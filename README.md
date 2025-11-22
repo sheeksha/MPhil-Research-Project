@@ -54,7 +54,7 @@ The UTM projection is critical for precise vessel detection, as it allows Sentin
 <img width="728" height="386" alt="image" src="https://github.com/user-attachments/assets/2bf1711b-a57b-497d-a917-cba24b96f325" />
 
 
-📚 ## Literature Review: Advances in Ship Detection
+## 📚 Literature Review: Advances in Ship Detection
 
 Ship detection in satellite imagery has evolved from traditional image processing methods with handcrafted features (HOG, SIFT) to deep learning-based approaches that learn robust patterns directly from data.
 
