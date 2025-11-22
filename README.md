@@ -532,6 +532,55 @@ This research investigated ship detection in Sentinel-2 imagery over the Mauriti
 ## ✅ Conclusion:
 YOLOv11 emerged as the most practical and scalable solution for Sentinel-2 ship detection, offering real-time potential for Maritime Domain Awareness (MDA). However, future research must expand datasets, enhance interpretability, and integrate multi-sensor approaches to build robust, deployable surveillance systems for small island states like Mauritius.
 
+## 🛠️ Core Skills & Key Technologies Used
+### 🚀 Core Skills
+- Deep Learning Model Development (CNNs, ANNs, YOLO, transfer learning)
+- Model Training & Evaluation (accuracy, loss curves, confusion matrices)
+- Hyperparameter Optimization (random search)
+- Data Preprocessing & Cleaning (image correction, tiling, normalization)
+- Spatial Data Analysis using GIS and satellite imagery
+- Scientific Research & Experiment Design
+- Performance Benchmarking across multiple CNN architectures
+- Technical Documentation & Academic Writing
+- Version Control with Git & GitHub
+- Reproducible Research Workflow (structured experiments, dataset versioning)
+
+### 🧰 Key Technologies & Tools
+- Python (primary programming language)
+- Deep Learning Libraries:
+  - TensorFlow / Keras
+  - PyTorch
+  - Ultralytics
+  - Scikit-Learn
+  - OpenCV
+
+- Spatial Analysis Tools:
+  - QGIS
+  - NumPy / SciPy for geometric calculations
+    
+- Visualization:
+    - Matplotlib
+    - Seaborn
+
+- Satellite Imagery Processing
+  - ultispectral image handling
+ - Image segmentation & patch extraction
+
+- Models Explored:
+  - VGG-16
+  - ResNet-50
+  - Inception-V3
+  - NASNetMobile
+  - EfficientNetB0
+  - DenseNet-121
+  - YOLOv11
+  - Custom ANN (baseline ship detection)
+
+- Mathematical Techniques:
+  - Haversine distance computation
+  - tatistical metrics
+  - Averages (micro/macro/weighted)
+
 ## 📄 Full Thesis Document
 You can access the complete MPhil thesis here:
 
