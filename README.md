@@ -36,8 +36,7 @@ This collection highlights the diversity of datasets used in maritime object det
 <p align="center">
   <img width="545" height="720" alt="image" src="https://github.com/user-attachments/assets/2868b308-bcf1-46f2-a05f-824ea73b8bbc" />
   <br>
-  <em>Table 1. A comprehensive overview of optical satellite datasets utilised for ship detection tasks. This collection highlights the diversity of datasets used in maritime object detection, ranging from high-resolution commercial data to publicly available data with varying revisit times and resolutions. [Source: https://github.com/JasonManesis/Satellite-Imagery-
-Datasets-Containing-Ships]</em>
+  <em>Table 1. A comprehensive overview of optical satellite datasets utilised for ship detection tasks. This collection highlights the diversity of datasets used in maritime object detection, ranging from high-resolution commercial data to publicly available data with varying revisit times and resolutions. [Source: https://github.com/JasonManesis/Satellite-Imagery-Datasets-Containing-Ships]</em>
 </p>
 
 
@@ -102,24 +101,17 @@ To estimate the longest path a vessel can take across the Mauritian maritime zon
 
 - ### 🧮 Distance Calculation (Haversine Formula)
 The distance \( d \) between two geographic points is calculated using the Haversine formula:
-```
-\[
-d = 2r \, \arcsin\left(
-\sqrt{
-\sin^2\left(\frac{\varphi_2 - \varphi_1}{2}\right)
-+
-\cos(\varphi_1)\cos(\varphi_2)
-\sin^2\left(\frac{\lambda_2 - \lambda_1}{2}\right)
-}
-\right)
-\]
+
+<p align="center">
+  <img width="627" height="115" alt="image" src="https://github.com/user-attachments/assets/21c74630-dfc8-4992-8347-586e70359083" />
+  <br>
+</p>
 
 Where:  
 - \( r \) is the Earth’s radius (≈ 6371 km)  
 - \( \varphi_1, \varphi_2 \) are latitudes in radians  
 - \( \lambda_1, \lambda_2 \) are longitudes in radians  
 
-```
 This reinforces the use of satellite imagery with a 6-day revisit frequency for effective ship monitoring, ensuring multiple detections along the route and improving surveillance reliability.
 
 <p align="center">
@@ -136,7 +128,7 @@ Since no ready-to-use Sentinel-2 ship detection dataset was available, a custom 
 <p align="center">
   <img width="700" height="479" alt="image" src="https://github.com/user-attachments/assets/81b797dd-6867-4580-939b-7d6daf57ef3c" />
   <br>
-  <em>Figure 2. Sentinel-2 optical satellite imagery mosaic overlaid with the Exclusive Economic Zone (EEZ) of Mauritius. It illustrates the scarce coverage over whole EEZ.</em>
+  <em>Figure 3. Sentinel-2 optical satellite imagery mosaic overlaid with the Exclusive Economic Zone (EEZ) of Mauritius. It illustrates the scarce coverage over whole EEZ.</em>
 </p>
 
 ### Steps Taken
@@ -161,7 +153,7 @@ Since no ready-to-use Sentinel-2 ship detection dataset was available, a custom 
 <p align="center">
   <img width="758" height="608" alt="image" src="https://github.com/user-attachments/assets/169844a3-2bd7-4a0e-a38b-85676b01712f" />
   <br>
-  <em>Figure 3. Sample images from the CNN-based dataset, illustrating the five object classes: Sea [0], Ship [1], Cloud [2], Land [3], and Coast [4], along with their corresponding labels.</em>
+  <em>Figure 4. Sample images from the CNN-based dataset, illustrating the five object classes: Sea [0], Ship [1], Cloud [2], Land [3], and Coast [4], along with their corresponding labels.</em>
 </p>
 
 - Annotation Challenges:
@@ -335,7 +327,7 @@ Eight CNN architectures were tested on the custom Sentinel-2 dataset (5 classes:
 <p align="center">
   <img width="534" height="777" alt="image" src="https://github.com/user-attachments/assets/2ad5423a-278e-4bb6-8e47-bb756477aa57" />
   <br>
-  <em>Figue 3. Output results of the first inferences of CNN models on large scene images without optimisation. MobileNet-V2demonstrated superior generalisation with no false positives but missed some near-shore ships. Models like ResNet-50 and Inception-V3 displayed many false positives, indicating poor generalisation despite high accuracy metrics in confusion matrix evaluations.</em>
+  <em>Figue 5. Output results of the first inferences of CNN models on large scene images without optimisation. MobileNet-V2demonstrated superior generalisation with no false positives but missed some near-shore ships. Models like ResNet-50 and Inception-V3 displayed many false positives, indicating poor generalisation despite high accuracy metrics in confusion matrix evaluations.</em>
 </p>
 
 ### Optimisation (HPO + NMS)
@@ -352,7 +344,7 @@ Eight CNN architectures were tested on the custom Sentinel-2 dataset (5 classes:
 <p align="center">
   <img width="565" height="804" alt="image" src="https://github.com/user-attachments/assets/e51dff63-1c94-4e99-91f9-fb94204e5565" />
   <br>
-  <em>Figure 5. Visual outputs of CNN models after applying hyperparameter optimisation (HPO) and Non-Maximum Suppression (NMS). Red bounding boxes indicate detections with a 100% confidence level. Models like MobileNet-V2, EfficientB0, and Inception-V3 showed significant reductions in false positives, while DenseNet-121 struggled to generalise effectively.</em>
+  <em>Figure 6. Visual outputs of CNN models after applying hyperparameter optimisation (HPO) and Non-Maximum Suppression (NMS). Red bounding boxes indicate detections with a 100% confidence level. Models like MobileNet-V2, EfficientB0, and Inception-V3 showed significant reductions in false positives, while DenseNet-121 struggled to generalise effectively.</em>
 </p>
 
 
@@ -396,25 +388,25 @@ YOLOv11 was evaluated for ship detection in Sentinel-2 imagery, focusing on prec
 <p align="center">
   <img width="529" height="760" alt="image" src="https://github.com/user-attachments/assets/d4dfe33d-ff39-4ef1-b516-81c0229e550e" />
   <br>
-  <em>Figure 6. Training and validation performance metrics over epochs for Yolov11n model with data augmentation and fine-tuning the parameters and hyperparameters. The plot shows the training loss (top-left), validation loss (top-right), mAP at IoU=0.50 and mAP at IoU=0.50-0.95 (bottom) during the training process. Compared to Figure 4.7, the loss curves are smoother and the mAP values are higher.</em>
+  <em>Figure 7. Training and validation performance metrics over epochs for Yolov11n model with data augmentation and fine-tuning the parameters and hyperparameters. The plot shows the training loss (top-left), validation loss (top-right), mAP at IoU=0.50 and mAP at IoU=0.50-0.95 (bottom) during the training process. Compared to Figure 4.7, the loss curves are smoother and the mAP values are higher.</em>
 </p>
 
 <p align="center">
   <img width="515" height="351" alt="image" src="https://github.com/user-attachments/assets/0d3e046a-27a8-4699-9aa2-4caca8e9da1e" />
   <br>
-  <em>Figure 7. Precision and Recall curves during training, showing the model’s performance over epochs. The blue curve represents the Precision score, while the red curve represents the Recall score. The curves highlights the model’s ability to correctly classify positive samples (Precision) and identify all relevant positive samples (Recall) evolve throughout the training process.</em>
+  <em>Figure 8. Precision and Recall curves during training, showing the model’s performance over epochs. The blue curve represents the Precision score, while the red curve represents the Recall score. The curves highlights the model’s ability to correctly classify positive samples (Precision) and identify all relevant positive samples (Recall) evolve throughout the training process.</em>
 </p>
 
 <p align="center">
   <img width="510" height="694" alt="image" src="https://github.com/user-attachments/assets/31d36f11-a774-4733-b5c3-ccd7cf3943b2" />
   <br>
-  <em>Figure 8. Comparison of performance metrics across IoU thresholds (0.10 to 1.00) for the Default YOLOv11 Configuration and Fine-Tuned YOLOv11 Training. The graphs illustrate the variations in key evaluation metrics, including precision, recall, F1-score, accuracy and AP, as a function of increasing IoU thresholds.</em>
+  <em>Figure 9. Comparison of performance metrics across IoU thresholds (0.10 to 1.00) for the Default YOLOv11 Configuration and Fine-Tuned YOLOv11 Training. The graphs illustrate the variations in key evaluation metrics, including precision, recall, F1-score, accuracy and AP, as a function of increasing IoU thresholds.</em>
 </p>
 
 <p align="center">
   <img width="635" height="624" alt="image" src="https://github.com/user-attachments/assets/c25b7da8-80e1-44ec-9cbc-051f084860c7" />
   <br>
-  <em>Figure 9. In test images where ships were detected, the model had a tendency of misclassifying cloud patterns as ships, indicated with yellow arrows. The figure also illustrates examples where relatively small ships were not detected (green bounding boxes) and closely packed and ships near the shore being missed (cyan bounding box)</em>
+  <em>Figure 10. In test images where ships were detected, the model had a tendency of misclassifying cloud patterns as ships, indicated with yellow arrows. The figure also illustrates examples where relatively small ships were not detected (green bounding boxes) and closely packed and ships near the shore being missed (cyan bounding box)</em>
 </p>
 
 
@@ -461,7 +453,7 @@ YOLOv11 was evaluated for ship detection in Sentinel-2 imagery, focusing on prec
 <p align="center">
   <img width="833" height="218" alt="image" src="https://github.com/user-attachments/assets/bb33454c-8bac-4393-847c-695950dccbca" />
   <br>
-  <em>Table 4. Performance metrics of better performing CNN models versus YOLOv11 fine-tuned model. YOLOv11 model showed better performance across all metrics. *The inference time for YOLO model is over one test image as opposed to over one chip for CNN models.</em>
+  <em>Table 3. Performance metrics of better performing CNN models versus YOLOv11 fine-tuned model. YOLOv11 model showed better performance across all metrics. *The inference time for YOLO model is over one test image as opposed to over one chip for CNN models.</em>
 </p>
 
 ### Qualitative Observations
