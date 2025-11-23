@@ -3,6 +3,23 @@
 
 🚢 Ship Detection in the Exclusive Economic Zone of Mauritius in Sentinel-2 Imagery using CNNs & Yolov11
 
+## Table of Contents
+1. Acknowledgements
+2. Overview
+3. Literature Review: Advances in Ship Detection
+4. Concerned Area
+5. Dataset Creation for CNN
+6. Dataset Creation for YOLO
+7. CNN-Based Methodology
+8. YOLOv11-Based Methodology
+9. Results & Discussion – CNN-Based Approach
+10. Results & Discussion – YOLOv11-Based Approach
+11. Comparative Analysis – CNN vs YOLOv11
+12. Summary
+13. Conclusion & Future Work
+14. Core Skills & Key Technologies Used
+15. Full Thesis Document
+
 ## 🙏 Acknowledgements
 
 This project would not have been possible without the incredible people who supported me along the way. First, I’m grateful to my supervisors — Assoc. Prof. Heeralall-Issur N., Prof. Cullen D., and Dr. Beeharry Y., for their steady guidance, thoughtful feedback, and patience throughout the research journey. To my family, my mother Anita, my brothers Ranveer, Yashwant, and Vrisht, and my sister-in-law Youri, thank you for believing in me and cheering me on through every challenge. My friends Heerveen, Dinesh, and Nawshine also deserve special mention for their encouragement and for keeping me motivated when things got tough. A big thanks as well to Ruben Louis for his timely technical support. 
@@ -483,7 +500,7 @@ YOLOv11 was evaluated for ship detection in Sentinel-2 imagery, focusing on prec
 - YOLOv11: Better suited for real-world maritime surveillance and real-time applications (live monitoring, drones, CubeSats).
   
 
-## ✅ Summary:
+## ✅ Summary
 CNNs achieved high accuracy on small patches but struggled in full-scene detection. YOLOv11 outperformed CNNs across accuracy, recall, and inference speed, making it the more practical and scalable solution for ship detection in Sentinel-2 imagery.
 
 | Feature                 | CNN Approach                               | YOLOv11 Approach                                   |
@@ -527,10 +544,6 @@ This research investigated ship detection in Sentinel-2 imagery over the Mauriti
 - Integrate Other Sensors: Combine Sentinel-2 with Sentinel-1 SAR for all-weather, day/night monitoring.
 - Tackle Limitations: Custom loss functions, attention/transformer mechanisms, adaptive thresholds for small ships and cluttered harbours.
 - Foundation Models: Explore DETR, SAM, and DINO for zero/few-shot detection and domain adaptation to maritime surveillance.
-  
-
-## ✅ Conclusion:
-YOLOv11 emerged as the most practical and scalable solution for Sentinel-2 ship detection, offering real-time potential for Maritime Domain Awareness (MDA). However, future research must expand datasets, enhance interpretability, and integrate multi-sensor approaches to build robust, deployable surveillance systems for small island states like Mauritius.
 
 ## 🛠️ Core Skills & Key Technologies Used
 ### 🚀 Core Skills
